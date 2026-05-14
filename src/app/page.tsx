@@ -476,12 +476,17 @@ function MobilePct({
 
 function IndicesStrip({ indices }: { indices: IndexQuote[] | null }) {
   return (
-    <div className="-mx-4 mt-3 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-      <div className="flex min-w-max gap-2">
-        {(indices ?? Array.from({ length: 5 }, () => null)).map((idx, i) => (
-          <IndexPill key={idx?.symbol ?? i} idx={idx} />
-        ))}
+    <div className="mt-3">
+      <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <div className="flex min-w-max gap-2">
+          {(indices ?? Array.from({ length: 5 }, () => null)).map((idx, i) => (
+            <IndexPill key={idx?.symbol ?? i} idx={idx} />
+          ))}
+        </div>
       </div>
+      <p className="mt-1.5 text-[11px] text-zinc-500">
+        주요 지수 · 약 15분 지연
+      </p>
     </div>
   );
 }
