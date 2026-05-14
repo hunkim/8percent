@@ -215,16 +215,10 @@ export default function Home() {
 
         </div>
 
-        <div className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
-          <p className="font-semibold">⚠️ 투자 유의사항</p>
-          <p className="mt-1">
-            이 사이트가 표시하는 <b>매수/매도</b> 신호는 단순히 과거 수익률이 기준
-            (연 8% · 분기 3% · 월 1%)을 넘었는지만 판단한 결과입니다. 미래 수익률을
-            보장하지 않으며, 투자 권유나 자문이 아닙니다. <b>모든 매매 결정과 그
-            결과에 대한 책임은 전적으로 본인에게 있습니다.</b> 실제 투자 전 반드시
-            기업 재무, 산업 전망, 본인의 투자 목적과 위험 감내 수준을 충분히 검토하세요.
-          </p>
-        </div>
+        <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
+          <b>⚠️ 투자 유의사항:</b> 과거 수익률 기준선 통과 여부만 표시합니다. 투자
+          권유 아님 · 매매 결정과 책임은 본인.
+        </p>
 
         {loading && (
           <div className="flex flex-col items-center justify-center py-16 text-zinc-500">
