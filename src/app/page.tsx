@@ -157,8 +157,7 @@ export default function Home() {
               연{" "}
               <b className="text-emerald-600 dark:text-emerald-400">8%</b> · 분기{" "}
               <b className="text-emerald-600 dark:text-emerald-400">3%</b> · 월{" "}
-              <b className="text-emerald-600 dark:text-emerald-400">1%</b> 이상이면{" "}
-              <span className="text-emerald-600 dark:text-emerald-400">매수</span>
+              <b className="text-emerald-600 dark:text-emerald-400">1%</b> 이상
             </span>
           </div>
 
