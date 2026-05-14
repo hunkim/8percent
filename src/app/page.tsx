@@ -135,10 +135,13 @@ export default function Home() {
     <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
         <header className="mb-8">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            12·8 percent
-          </h1>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="flex items-center gap-3">
+            <Logo className="h-10 w-10 shrink-0 sm:h-12 sm:w-12" />
+            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              8 percent
+            </h1>
+          </div>
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
             연 <b className="text-emerald-600 dark:text-emerald-400">8%</b> · 분기{" "}
             <b className="text-emerald-600 dark:text-emerald-400">3%</b> · 월{" "}
             <b className="text-emerald-600 dark:text-emerald-400">1%</b> — 기준
@@ -433,6 +436,49 @@ function MobilePct({
         {formatPct(value)}
       </span>
     </span>
+  );
+}
+
+function Logo({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-label="8 percent logo"
+    >
+      <rect width="64" height="64" rx="14" fill="#059669" />
+      <path
+        d="M16 44 L26 34 L34 40 L48 24"
+        stroke="#ffffff"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+        opacity="0.35"
+      />
+      <path
+        d="M40 24 L48 24 L48 32"
+        stroke="#ffffff"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+        opacity="0.35"
+      />
+      <text
+        x="32"
+        y="43"
+        fontFamily="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        fontSize="26"
+        fontWeight="800"
+        fill="#ffffff"
+        textAnchor="middle"
+        letterSpacing="-1"
+      >
+        8%
+      </text>
+    </svg>
   );
 }
 
