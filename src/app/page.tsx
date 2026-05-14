@@ -144,19 +144,6 @@ export default function Home() {
       });
   }, [resp, query, market, period]);
 
-  const stats = useMemo(() => {
-    if (!resp) return { buy: 0, total: 0 };
-    const meta = PERIOD_META[period];
-    const inScope = resp.data.filter((s) =>
-      market === "ALL" ? true : s.market === market
-    );
-    const buy = inScope.filter((s) => {
-      const v = s[period];
-      return v !== null && v >= meta.threshold;
-    }).length;
-    return { buy, total: inScope.length };
-  }, [resp, period, market]);
-
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-8">
@@ -227,15 +214,6 @@ export default function Home() {
           />
 
         </div>
-
-        {resp && (
-          <div className="mb-4 text-sm">
-            <span className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-1.5 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
-              매수 신호 <b>{stats.buy}</b> / {stats.total} 종목 (
-              {PERIOD_META[period].label} ≥ {PERIOD_META[period].thresholdLabel})
-            </span>
-          </div>
-        )}
 
         <div className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
           <p className="font-semibold">⚠️ 투자 유의사항</p>
