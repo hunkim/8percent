@@ -163,13 +163,6 @@ export default function Home() {
           </div>
 
           <IndicesStrip indices={indices} />
-
-          {resp && (
-            <p className="mt-2 text-[11px] text-zinc-500">
-              수익률 데이터: {formatFetchedAt(resp.fetchedAt)} · 종목{" "}
-              {resp.count}개
-            </p>
-          )}
         </header>
 
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
@@ -215,10 +208,15 @@ export default function Home() {
 
         </div>
 
-        <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
+        <p className="mt-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
           <b>⚠️ 투자 유의사항:</b> 과거 수익률 기준선 통과 여부만 표시합니다. 투자
           권유 아님 · 매매 결정과 책임은 본인.
         </p>
+        {resp && (
+          <p className="mb-4 mt-1.5 text-[11px] text-zinc-500">
+            수익률 데이터: {formatFetchedAt(resp.fetchedAt)} · 종목 {resp.count}개
+          </p>
+        )}
 
         {loading && (
           <div className="flex flex-col items-center justify-center py-16 text-zinc-500">
