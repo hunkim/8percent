@@ -79,7 +79,6 @@ export default function Home() {
   const [period, setPeriod] = useState<Period>("yearly");
   const [market, setMarket] = useState<MarketFilter>("ALL");
   const [query, setQuery] = useState("");
-  const [onlyBuy, setOnlyBuy] = useState(false);
 
   useEffect(() => {
     let cancel = false;
@@ -126,7 +125,6 @@ export default function Home() {
   const filtered = useMemo(() => {
     if (!resp) return [];
     const q = query.trim().toLowerCase();
-    const meta = PERIOD_META[period];
     return resp.data
       .filter((s) => (market === "ALL" ? true : s.market === market))
       .filter((s) => {
@@ -136,11 +134,6 @@ export default function Home() {
           s.name.toLowerCase().includes(q)
         );
       })
-      .filter((s) => {
-        if (!onlyBuy) return true;
-        const v = s[period];
-        return v !== null && v >= meta.threshold;
-      })
       .sort((a, b) => {
         const av = a[period];
         const bv = b[period];
@@ -149,7 +142,7 @@ export default function Home() {
         if (bv === null) return -1;
         return bv - av;
       });
-  }, [resp, query, market, period, onlyBuy]);
+  }, [resp, query, market, period]);
 
   const stats = useMemo(() => {
     if (!resp) return { buy: 0, total: 0 };
@@ -233,15 +226,6 @@ export default function Home() {
             className="min-w-[200px] flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm placeholder:text-zinc-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:ring-emerald-900/40"
           />
 
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <input
-              type="checkbox"
-              checked={onlyBuy}
-              onChange={(e) => setOnlyBuy(e.target.checked)}
-              className="h-4 w-4 accent-emerald-600"
-            />
-            매수 신호만
-          </label>
         </div>
 
         {resp && (
