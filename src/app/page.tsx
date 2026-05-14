@@ -151,8 +151,7 @@ export default function Home() {
           </p>
           {resp && (
             <p className="mt-2 text-xs text-zinc-500">
-              데이터 기준: {formatFetchedAt(resp.fetchedAt)}{" "}
-              {resp.cached ? "(캐시)" : "(방금 갱신)"} · 종목 {resp.count}개
+              데이터 기준: {formatFetchedAt(resp.fetchedAt)} · 종목 {resp.count}개
             </p>
           )}
         </header>
