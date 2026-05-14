@@ -20,6 +20,21 @@ type ApiResponse = {
   data: StockReturns[];
 };
 
+type IndexQuote = {
+  symbol: string;
+  label: string;
+  region: "KR" | "US";
+  price: number | null;
+  change: number | null;
+  changePercent: number | null;
+  marketTime: number | null;
+};
+
+type IndicesResponse = {
+  fetchedAt: number;
+  data: IndexQuote[];
+};
+
 type Period = "yearly" | "quarterly" | "monthly";
 type MarketFilter = "ALL" | "US" | "KR";
 
@@ -58,6 +73,7 @@ function formatFetchedAt(ts: number): string {
 
 export default function Home() {
   const [resp, setResp] = useState<ApiResponse | null>(null);
+  const [indices, setIndices] = useState<IndexQuote[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [period, setPeriod] = useState<Period>("yearly");
@@ -87,6 +103,23 @@ export default function Home() {
       });
     return () => {
       cancel = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancel = false;
+    const load = () =>
+      fetch("/api/indices")
+        .then((r) => r.json())
+        .then((json: IndicesResponse) => {
+          if (!cancel) setIndices(json.data);
+        })
+        .catch(() => {});
+    load();
+    const id = setInterval(load, 60_000);
+    return () => {
+      cancel = true;
+      clearInterval(id);
     };
   }, []);
 
@@ -133,25 +166,28 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-        <header className="mb-8">
-          <div className="flex items-center gap-3">
-            <Logo className="h-10 w-10 shrink-0 sm:h-12 sm:w-12" />
-            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-8">
+        <header className="mb-5">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <Logo className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
+            <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
               8 percent
             </h1>
+            <span className="text-xs text-zinc-500 sm:text-sm">
+              연{" "}
+              <b className="text-emerald-600 dark:text-emerald-400">8%</b> · 분기{" "}
+              <b className="text-emerald-600 dark:text-emerald-400">3%</b> · 월{" "}
+              <b className="text-emerald-600 dark:text-emerald-400">1%</b> 이상이면{" "}
+              <span className="text-emerald-600 dark:text-emerald-400">매수</span>
+            </span>
           </div>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            연 <b className="text-emerald-600 dark:text-emerald-400">8%</b> · 분기{" "}
-            <b className="text-emerald-600 dark:text-emerald-400">3%</b> · 월{" "}
-            <b className="text-emerald-600 dark:text-emerald-400">1%</b> — 기준
-            이상이면{" "}
-            <span className="text-emerald-600 dark:text-emerald-400">매수</span>,
-            이하면 <span className="text-zinc-400">매도</span>.
-          </p>
+
+          <IndicesStrip indices={indices} />
+
           {resp && (
-            <p className="mt-2 text-xs text-zinc-500">
-              데이터 기준: {formatFetchedAt(resp.fetchedAt)} · 종목 {resp.count}개
+            <p className="mt-2 text-[11px] text-zinc-500">
+              수익률 데이터: {formatFetchedAt(resp.fetchedAt)} · 종목{" "}
+              {resp.count}개
             </p>
           )}
         </header>
@@ -435,6 +471,58 @@ function MobilePct({
         {formatPct(value)}
       </span>
     </span>
+  );
+}
+
+function IndicesStrip({ indices }: { indices: IndexQuote[] | null }) {
+  return (
+    <div className="-mx-4 mt-3 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+      <div className="flex min-w-max gap-2">
+        {(indices ?? Array.from({ length: 5 }, () => null)).map((idx, i) => (
+          <IndexPill key={idx?.symbol ?? i} idx={idx} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function IndexPill({ idx }: { idx: IndexQuote | null }) {
+  if (!idx) {
+    return (
+      <div className="flex h-[44px] w-32 shrink-0 animate-pulse rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900" />
+    );
+  }
+  const up = (idx.changePercent ?? 0) > 0;
+  const down = (idx.changePercent ?? 0) < 0;
+  const colorClass = up
+    ? "text-emerald-600 dark:text-emerald-400"
+    : down
+      ? "text-rose-600 dark:text-rose-400"
+      : "text-zinc-500";
+  const arrow = up ? "▲" : down ? "▼" : "·";
+  const price =
+    idx.price !== null
+      ? idx.price.toLocaleString(undefined, {
+          maximumFractionDigits: 2,
+        })
+      : "—";
+  const pct =
+    idx.changePercent !== null
+      ? `${up ? "+" : ""}${idx.changePercent.toFixed(2)}%`
+      : "—";
+  return (
+    <div className="flex shrink-0 flex-col rounded-lg border border-zinc-200 bg-white px-3 py-1.5 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
+        <span>{idx.region === "KR" ? "🇰🇷" : "🇺🇸"}</span>
+        <span className="font-medium">{idx.label}</span>
+      </div>
+      <div className="flex items-baseline gap-1.5">
+        <span className="text-sm font-semibold tabular-nums">{price}</span>
+        <span className={`text-xs tabular-nums ${colorClass}`}>
+          {arrow} {pct}
+        </span>
+      </div>
+    </div>
   );
 }
 
